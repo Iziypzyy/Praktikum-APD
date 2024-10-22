@@ -1,0 +1,191 @@
+pengguna = {
+    'boss': {'password': 'boss321', 'role': 'boss'}
+}
+penjualan_ikanhias = {}
+total_penjualan = 0
+
+def menu_awal():
+    print(
+    """
+    ==============================
+    |  DATA PENJUALAN IKAN HIAS  |
+    ==============================
+    |   1. LOGIN                 |
+    |   2. REGISTRASI            |
+    |   3. KELUAR                |
+    ==============================
+    """
+    )
+
+    pilih_1 = input("Pilih opsi: ")
+
+    if pilih_1 == '1':
+        login()
+    elif pilih_1 == '2':
+        registrasi()
+    elif pilih_1 == '3':
+        print("Keluar dari program.")
+        return
+    else:
+        print("Pilihan tidak valid, silakan coba lagi.")
+        menu_awal()
+
+def login():
+    global pengguna
+    print(
+        """
+        ==============================
+        |       Login Pengguna       |
+        ==============================
+        """
+    )
+    username = input("Masukkan username : ")
+    password = input("Masukkan password : ")
+
+    akun = pengguna.get(username)
+
+    if akun and akun ['password'] == password:
+        print(f"\nSelamat datang, {username}!")
+        if akun ['role'] == 'boss':
+            menu_boss()
+        else:
+            menu_pengguna()
+    else:
+        print("Username atau password salah.")
+        menu_awal()
+
+def registrasi():
+    global pengguna
+    print(
+        """
+        ==============================
+        |     Registrasi Pengguna    |
+        ==============================
+        """
+    )
+    username_baru = input("Masukkan username baru : ")
+
+    if username_baru in pengguna.keys():
+        print("Username sudah ada, coba yang lain!")
+    else:
+        password_baru = input("Masukkan password baru : ")
+        role = input("Daftar sebagai (boss/pengguna) : ").lower()
+
+        if role in ['boss', 'pengguna']:
+            pengguna[username_baru] = {'password': password_baru, 'role': role}
+            print(f"Registrasi sebagai {role} berhasil!")
+        else:
+            print("Role tidak valid, harus boss atau pengguna.")
+    menu_awal()
+
+def menu_boss():
+    print(
+        """
+        ==============================
+        |          MENU BOSS         |
+        ==============================
+        |   1. TAMBAH IKAN HIAS      |
+        |   2. TAMPILKAN SEMUA IKAN  |      
+        |   3. UPDATE IKAN HIAS      |
+        |   4. HAPUS DATA IKAN HIAS  |
+        |   5. KELUAR                |
+        ==============================
+        """
+    )
+
+    pilih = int(input("\npilih menu data (1-5): "))
+                        
+    if pilih == 1:
+        jenis_ikanhias = input("Jenis Ikan Hias: ")
+        harga_ikanhias = int(input("Harga Ikan Hias: "))
+        stok_ikanhias = int(input("Stok yang tersedia: "))
+        penjualan_ikanhias[jenis_ikanhias] = {'harga' : harga_ikanhias, 'stok' : stok_ikanhias }
+        print("\nIkan Hias Telah Ditambahkan.")
+
+    elif pilih == 2:
+        if not penjualan_ikanhias:
+            print("Data Ikan Hias tidak ditemukan.")
+        else:
+            print("\nData Ikan Hias.")
+            for jenis, data in penjualan_ikanhias.items():
+                print (f"\nData Ikan Hias:, JENIS: {jenis}, HARGA: {data['harga']},STOK: {data['stok']}")
+
+    elif pilih == 3:
+        if not penjualan_ikanhias:
+            print("Tidak ada data Ikan Hias yang diupdate.")
+        else:
+            print("\nData Ikan Hias:")
+            jenis_ikanhias = input("Jenis Ikan Yang Ingin Diupdate: ")
+            if penjualan_ikanhias in penjualan_ikanhias:
+                jenis_ikanbaru = input("Jenis Baru: ")
+                harga_ikanbaru = input("Harga Baru: ")
+                stok_ikanbaru = input("Stok baru: ")
+                penjualan_ikanhias[jenis_ikanhias]['jenis'] = jenis_ikanbaru
+                penjualan_ikanhias[jenis_ikanhias]['harga'] = harga_ikanbaru
+                penjualan_ikanhias[jenis_ikanhias]['stok'] = stok_ikanbaru
+                print(f"data Ikan {jenis_ikanhias} telah diperbarui.")
+            else:
+                print("Ikan Hias tidak ditemukan.")
+
+    elif pilih == 4:
+        jenis_ikanhias = input("\nJenis Ikan Yang Ingin dihapus: ")
+        if jenis_ikanhias in penjualan_ikanhias:
+            del penjualan_ikanhias[jenis_ikanhias]
+            print(f"Ikan {jenis_ikanhias} telah dihapus.")
+        else:
+            print("\nIkan Hias tidak ditemukan")
+
+
+    elif pilih == 5:
+        print("Terima Kasih telah mengakses Data Penjualan Ikan Hias")
+        menu_awal()
+    else:
+        print("Anda Salah Input.")
+
+def menu_pengguna():
+    print(
+        """
+        =============================
+        |        DATA PENGGUNA      |
+        =============================
+        |   1.  lIHAT SEMUA IKAN    |
+        |   2.  BELI IKAN           |
+        |   3.  KELUAR              |
+        =============================
+        """
+    )
+    pilih = int(input("\nPilih menu data pengguna (1-3): "))
+
+    if pilih == 1:
+        if not penjualan_ikanhias:
+            print("Data Ikan Hias tidak ditemukan.")
+        else:
+            print("\nData Ikan Hias: ")
+            for jenis, data in penjualan_ikanhias.items():
+                print(f"JENIS: {jenis}, HARGA: {data['harga']}, STOK: {data['stok']}")
+
+    elif pilih == 2:
+        if not penjualan_ikanhias:
+            print("Dara Ikan Hias tidak ditemukan.")
+        else:
+            jenis_ikanhias = input("Masukkan jenis ikan hias yang ingin dibeli: ")
+            if jenis_ikanhias in penjualan_ikanhias:
+                jumlah_beli = int(input("Masukkan jumlah yang ingin dibeli: "))
+                if penjualan_ikanhias[jenis_ikanhias]['stok'] >= jumlah_beli:
+                    penjualan_ikanhias[jenis_ikanhias]['stok'] -= jumlah_beli
+                    print(f"Anda telah membeli {jumlah_beli} ekor {jenis_ikanhias}.")
+                    print(f"Sisa stok {jenis_ikanhias}: {penjualan_ikanhias[jenis_ikanhias]['stok']}")
+                else:
+                    print("stok tidak mencukupi.")
+            else:
+                print("Ikan Hias tidak ditemukan.")
+
+    elif pilih == 3:
+        print("Terima Kasih telah mengakses data penjualan Ikan Hias")
+        menu_awal()
+    else:
+        print("Anda salah input.")
+
+    menu_pengguna()
+
+menu_awal()
